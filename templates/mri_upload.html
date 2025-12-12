@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ t('mri_upload') }} | {{ t('app_name') }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='mri_upload.css') }}">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 25.2c-6.186 0-11.2-5.014-11.2-11.2S9.814 4.8 16 4.8 27.2 9.814 27.2 16 22.186 27.2 16 27.2z" fill="#2563EB"/>
+          <path d="M16 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm-5 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm10 0c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z" fill="#2563EB"/>
+        </svg>
+        <span>{{ t('app_name') }}</span>
+      </div>
+      <div class="header-actions">
+        <!-- Language Selector -->
+        <div class="language-selector">
+          <button class="language-btn" onclick="toggleLanguageMenu()">
+            <svg class="language-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span class="current-lang">
+              {% if current_lang == 'en' %}EN
+              {% elif current_lang == 'ta' %}தமிழ்
+              {% elif current_lang == 'hi' %}हिं
+              {% endif %}
+            </span>
+          </button>
+          <div class="language-menu" id="languageMenu">
+            <a href="/set_language/en" class="language-option {% if current_lang == 'en' %}active{% endif %}">
+              <span class="lang-flag">🇬🇧</span>
+              <span>English</span>
+            </a>
+            <a href="/set_language/ta" class="language-option {% if current_lang == 'ta' %}active{% endif %}">
+              <span class="lang-flag">🇮🇳</span>
+              <span>தமிழ் (Tamil)</span>
+            </a>
+            <a href="/set_language/hi" class="language-option {% if current_lang == 'hi' %}active{% endif %}">
+              <span class="lang-flag">🇮🇳</span>
+              <span>हिंदी (Hindi)</span>
+            </a>
+          </div>
+        </div>
+        <a href="/predictor" class="btn-text">{{ t('cognitive_tests') }}</a>
+        <a href="/history" class="btn-text">{{ t('history') }}</a>
+        <a href="/logout" class="btn-logout">{{ t('logout') }}</a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Page Title Section -->
+      <div class="page-title-section">
+        <div class="title-content">
+          <h1>{{ t('mri_brain_scan_analysis') }}</h1>
+          <p>{{ t('mri_analysis_desc') }}</p>
+        </div>
+        <div class="title-icon">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" stroke="#2563EB" stroke-width="2" fill="#EFF6FF"/>
+            <path d="M32 16c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16zm0 28c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z" fill="#2563EB"/>
+            <circle cx="28" cy="28" r="3" fill="#2563EB"/>
+            <circle cx="36" cy="28" r="3" fill="#2563EB"/>
+            <circle cx="32" cy="36" r="3" fill="#2563EB"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Upload Card -->
+      <div class="upload-card">
+        <!-- Instructions Section -->
+        <div class="instructions-section">
+          <h3>{{ t('upload_guidelines') }}</h3>
+          <div class="guidelines-grid">
+            <div class="guideline-item">
+              <div class="guideline-icon">📁</div>
+              <div class="guideline-content">
+                <strong>{{ t('supported_formats') }}</strong>
+                <span>JPEG, PNG, DICOM, NIfTI (.nii)</span>
+              </div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📏</div>
+              <div class="guideline-content">
+                <strong>{{ t('image_size') }}</strong>
+                <span>{{ t('max_10mb') }}</span>
+              </div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">🔍</div>
+              <div class="guideline-content">
+                <strong>{{ t('image_quality') }}</strong>
+                <span>{{ t('high_resolution') }}</span>
+              </div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">🧠</div>
+              <div class="guideline-content">
+                <strong>{{ t('scan_type') }}</strong>
+                <span>{{ t('t1_t2_flair') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Form -->
+        <form id="mriUploadForm" action="/predict_mri" method="POST" enctype="multipart/form-data">
+          <!-- Patient Information -->
+          <div class="form-section">
+            <h3>{{ t('patient_info') }}</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="patient_name">
+                  {{ t('patient_name') }} <span class="required">*</span>
+                </label>
+                <input type="text" id="patient_name" name="patient_name" required 
+                       placeholder="{{ t('enter_patient_name') }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="patient_id">
+                  {{ t('patient_id') }}
+                  <span class="info-tooltip" 
+                        data-title="{{ t('patient_id') }}"
+                        data-description="{{ t('patient_id_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="text" id="patient_id" name="patient_id" 
+                       value="{{ username }}_{{ current_date }}" readonly
+                       placeholder="{{ t('auto_generated') }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="age">
+                  {{ t('age') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('age') }}"
+                        data-description="{{ t('mri_age_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="age" name="Age" required 
+                       min="{{ mri_limits['Age']['min'] }}" 
+                       max="{{ mri_limits['Age']['max'] }}" 
+                       placeholder="{{ mri_limits['Age']['min'] }}-{{ mri_limits['Age']['max'] }} {{ t('years') }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="gender">
+                  {{ t('gender') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('gender') }}"
+                        data-description="{{ t('gender_tooltip') }}">ⓘ</span>
+                </label>
+                <select id="gender" name="M/F" required>
+                  <option value="">{{ t('select_gender') }}</option>
+                  <option value="1">{{ t('male') }}</option>
+                  <option value="0">{{ t('female') }}</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="educ">
+                  {{ t('education_years') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('education_years') }}"
+                        data-description="{{ t('education_years_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="educ" name="EDUC" required 
+                       min="{{ mri_limits['EDUC']['min'] }}" 
+                       max="{{ mri_limits['EDUC']['max'] }}" 
+                       placeholder="{{ mri_limits['EDUC']['min'] }}-{{ mri_limits['EDUC']['max'] }} {{ t('years') }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="ses">
+                  {{ t('socioeconomic_status') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('socioeconomic_status') }}"
+                        data-description="{{ t('ses_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="ses" name="SES" required 
+                       min="{{ mri_limits['SES']['min'] }}" 
+                       max="{{ mri_limits['SES']['max'] }}" 
+                       step="0.1" 
+                       placeholder="{{ mri_limits['SES']['min'] }}-{{ mri_limits['SES']['max'] }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="mmse">
+                  {{ t('mmse_score') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('mmse') }}"
+                        data-description="{{ t('mmse_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="mmse" name="MMSE" required 
+                       min="{{ mri_limits['MMSE']['min'] }}" 
+                       max="{{ mri_limits['MMSE']['max'] }}" 
+                       placeholder="{{ mri_limits['MMSE']['min'] }}-{{ mri_limits['MMSE']['max'] }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="cdr">
+                  {{ t('cdr_score') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('cdr') }}"
+                        data-description="{{ t('cdr_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="cdr" name="CDR" required 
+                       min="{{ mri_limits['CDR']['min'] }}" 
+                       max="{{ mri_limits['CDR']['max'] }}" 
+                       step="0.1" 
+                       placeholder="{{ mri_limits['CDR']['min'] }}-{{ mri_limits['CDR']['max'] }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="etiv">
+                  {{ t('etiv') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('etiv') }}"
+                        data-description="{{ t('etiv_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="etiv" name="eTIV" required 
+                       min="{{ mri_limits['eTIV']['min'] }}" 
+                       max="{{ mri_limits['eTIV']['max'] }}" 
+                       placeholder="{{ mri_limits['eTIV']['min'] }}-{{ mri_limits['eTIV']['max'] }} mm³">
+              </div>
+              
+              <div class="form-group">
+                <label for="nwbv">
+                  {{ t('nwbv') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('nwbv') }}"
+                        data-description="{{ t('nwbv_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="nwbv" name="nWBV" required 
+                       min="{{ mri_limits['nWBV']['min'] }}" 
+                       max="{{ mri_limits['nWBV']['max'] }}" 
+                       step="0.001" 
+                       placeholder="{{ mri_limits['nWBV']['min'] }}-{{ mri_limits['nWBV']['max'] }}">
+              </div>
+              
+              <div class="form-group">
+                <label for="asf">
+                  {{ t('asf') }} <span class="required">*</span>
+                  <span class="info-tooltip" 
+                        data-title="{{ t('asf') }}"
+                        data-description="{{ t('asf_tooltip') }}">ⓘ</span>
+                </label>
+                <input type="number" id="asf" name="ASF" required 
+                       min="{{ mri_limits['ASF']['min'] }}" 
+                       max="{{ mri_limits['ASF']['max'] }}" 
+                       step="0.001" 
+                       placeholder="{{ mri_limits['ASF']['min'] }}-{{ mri_limits['ASF']['max'] }}">
+              </div>
+            </div>
+          </div>
+
+          <!-- MRI Upload Section -->
+          <div class="form-section">
+            <h3>{{ t('mri_scan_upload') }}</h3>
+            <!-- Drag and Drop Area -->
+            <div class="upload-area" id="uploadArea">
+              <input type="file" id="mri_file" name="mri_file" accept=".jpg,.jpeg,.png,.dcm,.nii,.nii.gz" hidden>
+              <div class="upload-content" id="uploadContent">
+                <div class="upload-icon">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 16v32M16 32h32" stroke="#3B82F6" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="32" cy="32" r="28" stroke="#3B82F6" stroke-width="2" stroke-dasharray="4 4"/>
+                  </svg>
+                </div>
+                <h4>{{ t('drag_drop_mri') }}</h4>
+                <p>{{ t('or_click_browse') }}</p>
+                <span class="file-types">{{ t('supports_formats') }}</span>
+              </div>
+              <div class="file-preview" id="filePreview" style="display: none;">
+                <img id="previewImage" src="" alt="MRI Preview">
+                <div class="file-info">
+                  <div class="file-name" id="fileName"></div>
+                  <div class="file-size" id="fileSize"></div>
+                </div>
+                <button type="button" class="remove-file" id="removeFile">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="form-group">
+              <label for="notes">{{ t('clinical_notes') }}</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="{{ t('clinical_notes_placeholder') }}"></textarea>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 2v12M15 9l-5 5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 14v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              {{ t('analyze_mri_scan') }}
+            </button>
+            <button type="reset" class="btn btn-secondary" id="resetBtn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.5 8.5A7.5 7.5 0 0110 1v0a7.5 7.5 0 017.5 7.5v0M17.5 11.5A7.5 7.5 0 0110 19v0a7.5 7.5 0 01-7.5-7.5v0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M2 5l.5 3.5L6 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ t('reset_form') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Information Cards -->
+      <div class="info-cards">
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="14" stroke="#10B981" stroke-width="2"/>
+              <path d="M12 16l3 3 6-6" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4>{{ t('ai_powered_analysis') }}</h4>
+          <p>{{ t('ai_analysis_desc') }}</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="4" width="24" height="24" rx="2" stroke="#3B82F6" stroke-width="2"/>
+              <path d="M16 10v12M10 16h12" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4>{{ t('secure_confidential') }}</h4>
+          <p>{{ t('secure_desc') }}</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="14" stroke="#F59E0B" stroke-width="2"/>
+              <path d="M16 10v8l4 4" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4>{{ t('fast_results') }}</h4>
+          <p>{{ t('fast_results_desc') }}</p>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z" fill="#DC2626"/>
+        </svg>
+        <p><strong>{{ t('medical_disclaimer') }}:</strong> {{ t('disclaimer_text') }}</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Language menu toggle
+    function toggleLanguageMenu() {
+      const menu = document.getElementById('languageMenu');
+      menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function(event) {
+      const languageSelector = document.querySelector('.language-selector');
+      const languageMenu = document.getElementById('languageMenu');
+      
+      if (languageSelector && !languageSelector.contains(event.target)) {
+        languageMenu.classList.remove('show');
+      }
+    });
+
+    // Tooltip handler
+    const tooltipHandler = {
+      activeTooltip: null,
+      
+      createTooltip(element) {
+        const title = element.getAttribute('data-title');
+        const description = element.getAttribute('data-description');
+        
+        const tooltipEl = document.createElement('div');
+        tooltipEl.className = 'tooltip-popup';
+        
+        let content = '';
+        if (title) content += `<span class="tooltip-title">${title}</span>`;
+        if (description) content += `<div class="tooltip-description">${description}</div>`;
+        
+        tooltipEl.innerHTML = content;
+        return tooltipEl;
+      },
+      
+      positionTooltip(tooltip, trigger) {
+        const formGroup = trigger.closest('.form-group');
+        if (formGroup) {
+          formGroup.style.position = 'relative';
+          formGroup.appendChild(tooltip);
+        }
+      },
+      
+      showTooltip(element) {
+        this.hideTooltip();
+        const tooltip = this.createTooltip(element);
+        this.positionTooltip(tooltip, element);
+        this.activeTooltip = tooltip;
+        element.activeTooltip = tooltip;
+      },
+      
+      hideTooltip() {
+        if (this.activeTooltip && this.activeTooltip.parentNode) {
+          this.activeTooltip.remove();
+          this.activeTooltip = null;
+        }
+      }
+    };
+    
+    document.querySelectorAll('.info-tooltip').forEach(tooltip => {
+      tooltip.addEventListener('mouseenter', function() {
+        tooltipHandler.showTooltip(this);
+      });
+      
+      tooltip.addEventListener('mouseleave', function() {
+        tooltipHandler.hideTooltip();
+      });
+      
+      tooltip.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.activeTooltip) {
+          tooltipHandler.hideTooltip();
+        } else {
+          tooltipHandler.showTooltip(this);
+        }
+      });
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (!e.target.classList.contains('info-tooltip')) {
+        tooltipHandler.hideTooltip();
+      }
+    });
+
+    // File upload functionality
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('mri_file');
+    const uploadContent = document.getElementById('uploadContent');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFile = document.getElementById('removeFile');
+    const form = document.getElementById('mriUploadForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    uploadArea.addEventListener('click', () => {
+      if (uploadContent.style.display !== 'none') {
+        fileInput.click();
+      }
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('drag-over');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('drag-over');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      const validTypes = ['image/jpeg', 'image/png', 'application/dicom'];
+      const maxSize = 10 * 1024 * 1024;
+
+      if (!validTypes.includes(file.type) && !file.name.endsWith('.nii') && !file.name.endsWith('.nii.gz')) {
+        alert('{{ t("invalid_file_format") }}');
+        return;
+      }
+
+      if (file.size > maxSize) {
+        alert('{{ t("file_too_large") }}');
+        return;
+      }
+
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImage.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23E5E7EB" width="200" height="200"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="%234B5563" font-family="Arial" font-size="16">MRI File</text></svg>';
+      }
+
+      uploadContent.style.display = 'none';
+      filePreview.style.display = 'flex';
+    }
+
+    removeFile.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.value = '';
+      uploadContent.style.display = 'flex';
+      filePreview.style.display = 'none';
+    });
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    form.addEventListener('submit', (e) => {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> {{ t("analyzing") }}...';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      uploadContent.style.display = 'flex';
+      filePreview.style.display = 'none';
+      fileInput.value = '';
+    });
+  </script>
+</body>
+</html>

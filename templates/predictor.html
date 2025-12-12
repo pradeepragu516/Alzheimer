@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ t('comprehensive_assessment') }} | {{ t('app_name') }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='predictor.css') }}">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="navbar-content">
+      <a href="/home" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>{{ t('back_to_dashboard') }}</span>
+      </a>
+      
+      <div class="navbar-actions">
+        <!-- Language Selector -->
+        <div class="language-selector">
+          <button class="language-btn" onclick="toggleLanguageMenu()">
+            <svg class="language-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span class="current-lang">
+              {% if current_lang == 'en' %}EN
+              {% elif current_lang == 'ta' %}தமிழ்
+              {% elif current_lang == 'hi' %}हिं
+              {% endif %}
+            </span>
+          </button>
+          <div class="language-menu" id="languageMenu">
+            <a href="/set_language/en" class="language-option {% if current_lang == 'en' %}active{% endif %}">
+              <span class="lang-flag">🇬🇧</span>
+              <span>English</span>
+            </a>
+            <a href="/set_language/ta" class="language-option {% if current_lang == 'ta' %}active{% endif %}">
+              <span class="lang-flag">🇮🇳</span>
+              <span>தமிழ் (Tamil)</span>
+            </a>
+            <a href="/set_language/hi" class="language-option {% if current_lang == 'hi' %}active{% endif %}">
+              <span class="lang-flag">🇮🇳</span>
+              <span>हिंदी (Hindi)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">{{ t('comprehensive_assessment') }}</h1>
+        <p class="page-subtitle">{{ t('complete_form_desc') }}</p>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <!-- Assessment Form -->
+      <form action="/predict" method="post" id="assessmentForm" class="assessment-form">
+        
+        <!-- Section 1: Patient Information -->
+        <div class="form-section" data-section="1">
+          <div class="section-header">
+            <div class="section-number">1</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('patient_info') }}</h2>
+              <p class="section-description">{{ t('patient_info_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="PatientName" class="form-label">
+                {{ t('patient_name') }}
+                <span class="required">*</span>
+              </label>
+              <input type="text" id="PatientName" name="PatientName" class="form-input" placeholder="{{ t('enter_patient_name') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="Age" class="form-label">
+                {{ t('age') }}
+                <span class="required">*</span>
+                <span class="info-tooltip" 
+                      data-title="{{ t('age') }}"
+                      data-description="{{ t('age_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="Age" name="Age" class="form-input" min="60" max="90" placeholder="60-90 {{ t('years') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="Gender" class="form-label">
+                {{ t('gender') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('gender') }}"
+                      data-description="{{ t('gender_tooltip') }}">ⓘ</span>
+              </label>
+              <select id="Gender" name="Gender" class="form-input" required>
+                <option value="">{{ t('select_gender') }}</option>
+                <option value="0">{{ t('female') }}</option>
+                <option value="1">{{ t('male') }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="Ethnicity" class="form-label">
+                {{ t('ethnicity') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('ethnicity') }}"
+                      data-description="{{ t('ethnicity_tooltip') }}">ⓘ</span>
+              </label>
+              <select id="Ethnicity" name="Ethnicity" class="form-input" required>
+                <option value="">{{ t('select_ethnicity') }}</option>
+                <option value="0">{{ t('other') }}</option>
+                <option value="1">{{ t('asian') }}</option>
+                <option value="2">{{ t('black') }}</option>
+                <option value="3">{{ t('white') }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="EducationLevel" class="form-label">
+                {{ t('education_level') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('education_level') }}"
+                      data-description="{{ t('education_tooltip') }}">ⓘ</span>
+              </label>
+              <select id="EducationLevel" name="EducationLevel" class="form-input" required>
+                <option value="">{{ t('select_level') }}</option>
+                <option value="0">{{ t('no_schooling') }}</option>
+                <option value="1">{{ t('primary_education') }}</option>
+                <option value="2">{{ t('secondary_education') }}</option>
+                <option value="3">{{ t('higher_education') }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Medical History -->
+        <div class="form-section" data-section="2">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('medical_history') }}</h2>
+              <p class="section-description">{{ t('medical_history_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('family_history_alz') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('family_history') }}"
+                      data-description="{{ t('family_history_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="FamilyHistoryAlzheimers" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="FamilyHistoryAlzheimers" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('diabetes') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('diabetes') }}"
+                      data-description="{{ t('diabetes_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Diabetes" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Diabetes" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('hypertension') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('hypertension') }}"
+                      data-description="{{ t('hypertension_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Hypertension" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Hypertension" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('cardiovascular_disease') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('cardiovascular_disease') }}"
+                      data-description="{{ t('cardiovascular_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="CardiovascularDisease" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="CardiovascularDisease" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('depression') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('depression') }}"
+                      data-description="{{ t('depression_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Depression" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Depression" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('head_injury') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('head_injury') }}"
+                      data-description="{{ t('head_injury_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="HeadInjury" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="HeadInjury" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Lifestyle Factors -->
+        <div class="form-section" data-section="3">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('lifestyle') }}</h2>
+              <p class="section-description">{{ t('lifestyle_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="BMI" class="form-label">
+                {{ t('bmi') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('bmi') }}"
+                      data-description="{{ t('bmi_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="BMI" name="BMI" class="form-input" min="15" max="38" step="0.1" placeholder="15-38" required>
+            </div>
+            <div class="form-group">
+              <label for="PhysicalActivity" class="form-label">
+                {{ t('physical_activity') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('physical_activity') }}"
+                      data-description="{{ t('physical_activity_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="PhysicalActivity" name="PhysicalActivity" class="form-input" min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('smoking_status') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('smoking') }}"
+                      data-description="{{ t('smoking_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Smoking" value="0" required>
+                  <span>{{ t('non_smoker') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Smoking" value="1">
+                  <span>{{ t('smoker') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="AlcoholConsumption" class="form-label">
+                {{ t('alcohol_consumption') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('alcohol_consumption') }}"
+                      data-description="{{ t('alcohol_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="AlcoholConsumption" name="AlcoholConsumption" class="form-input" min="0" max="20" step="0.1" placeholder="0-20" required>
+            </div>
+            <div class="form-group">
+              <label for="DietQuality" class="form-label">
+                {{ t('diet_quality') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('diet_quality') }}"
+                      data-description="{{ t('diet_quality_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="DietQuality" name="DietQuality" class="form-input" min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+            <div class="form-group">
+              <label for="SleepQuality" class="form-label">
+                {{ t('sleep_quality') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('sleep_quality') }}"
+                      data-description="{{ t('sleep_quality_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="SleepQuality" name="SleepQuality" class="form-input" min="4" max="10" step="0.1" placeholder="4-10" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Vital Signs & Lab Results -->
+        <div class="form-section" data-section="4">
+          <div class="section-header">
+            <div class="section-number">4</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('vital_signs') }}</h2>
+              <p class="section-description">{{ t('vital_signs_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="SystolicBP" class="form-label">
+                {{ t('systolic_bp') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('systolic_bp') }}"
+                      data-description="{{ t('systolic_bp_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="SystolicBP" name="SystolicBP" class="form-input" min="90" max="179" placeholder="90-179" required>
+            </div>
+            <div class="form-group">
+              <label for="DiastolicBP" class="form-label">
+                {{ t('diastolic_bp') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('diastolic_bp') }}"
+                      data-description="{{ t('diastolic_bp_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="DiastolicBP" name="DiastolicBP" class="form-input" min="50" max="120" placeholder="50-120" required>
+            </div>
+            <div class="form-group">
+              <label for="CholesterolTotal" class="form-label">
+                {{ t('total_cholesterol') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('total_cholesterol') }}"
+                      data-description="{{ t('cholesterol_total_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="CholesterolTotal" name="CholesterolTotal" class="form-input" min="100" max="400" step="0.1" placeholder="100-400" required>
+            </div>
+            <div class="form-group">
+              <label for="CholesterolLDL" class="form-label">
+                {{ t('ldl_cholesterol') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('ldl_cholesterol') }}"
+                      data-description="{{ t('ldl_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="CholesterolLDL" name="CholesterolLDL" class="form-input" min="50" max="199" step="0.1" placeholder="50-199" required>
+            </div>
+            <div class="form-group">
+              <label for="CholesterolHDL" class="form-label">
+                {{ t('hdl_cholesterol') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('hdl_cholesterol') }}"
+                      data-description="{{ t('hdl_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="CholesterolHDL" name="CholesterolHDL" class="form-input" min="20" max="150" step="0.1" placeholder="20-150" required>
+            </div>
+            <div class="form-group">
+              <label for="CholesterolTriglycerides" class="form-label">
+                {{ t('triglycerides') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('triglycerides') }}"
+                      data-description="{{ t('triglycerides_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="CholesterolTriglycerides" name="CholesterolTriglycerides" class="form-input" min="50" max="500" step="0.1" placeholder="50-500" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Cognitive Assessment -->
+        <div class="form-section" data-section="5">
+          <div class="section-header">
+            <div class="section-number">5</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('cognitive_assessment') }}</h2>
+              <p class="section-description">{{ t('cognitive_assessment_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="MMSE" class="form-label">
+                {{ t('mmse_score') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('mmse') }}"
+                      data-description="{{ t('mmse_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="MMSE" name="MMSE" class="form-input" min="0" max="30" step="0.1" placeholder="0-30" required>
+            </div>
+            <div class="form-group">
+              <label for="FunctionalAssessment" class="form-label">
+                {{ t('functional_assessment') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('functional_assessment') }}"
+                      data-description="{{ t('functional_assessment_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="FunctionalAssessment" name="FunctionalAssessment" class="form-input" min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+            <div class="form-group">
+              <label for="ADL" class="form-label">
+                {{ t('adl_score') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('adl') }}"
+                      data-description="{{ t('adl_tooltip') }}">ⓘ</span>
+              </label>
+              <input type="number" id="ADL" name="ADL" class="form-input" min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Clinical Symptoms -->
+        <div class="form-section" data-section="6">
+          <div class="section-header">
+            <div class="section-number">6</div>
+            <div class="section-info">
+              <h2 class="section-title">{{ t('clinical_symptoms') }}</h2>
+              <p class="section-description">{{ t('clinical_symptoms_desc') }}</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('memory_complaints') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('memory_complaints') }}"
+                      data-description="{{ t('memory_complaints_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="MemoryComplaints" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="MemoryComplaints" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('behavioral_problems') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('behavioral_problems') }}"
+                      data-description="{{ t('behavioral_problems_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="BehavioralProblems" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="BehavioralProblems" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('confusion') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('confusion') }}"
+                      data-description="{{ t('confusion_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Confusion" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Confusion" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('disorientation') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('disorientation') }}"
+                      data-description="{{ t('disorientation_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Disorientation" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Disorientation" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('personality_changes') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('personality_changes') }}"
+                      data-description="{{ t('personality_changes_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="PersonalityChanges" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="PersonalityChanges" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('difficulty_completing_tasks') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('difficulty_completing_tasks') }}"
+                      data-description="{{ t('task_completion_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="DifficultyCompletingTasks" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="DifficultyCompletingTasks" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="form-label">
+                {{ t('forgetfulness') }}
+                <span class="required">*</span>
+                <span class="info-tooltip"
+                      data-title="{{ t('forgetfulness') }}"
+                      data-description="{{ t('forgetfulness_tooltip') }}">ⓘ</span>
+              </label>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="Forgetfulness" value="0" required>
+                  <span>{{ t('no') }}</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="Forgetfulness" value="1">
+                  <span>{{ t('yes') }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden fields for other required parameters -->
+        <input type="hidden" name="PatientID" value="1">
+        <input type="hidden" name="Diagnosis" value="0">
+        <input type="hidden" name="DoctorInCharge" value="0">
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">
+            <span class="btn-icon">🔍</span>
+            {{ t('generate_assessment') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 {{ t('app_name') }}. {{ t('ai_powered_platform') }}</p>
+      <p class="footer-note">{{ t('disclaimer_text') }}</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle Language Menu
+    function toggleLanguageMenu() {
+      const menu = document.getElementById('languageMenu');
+      menu.classList.toggle('show');
+    }
+
+    // Close language menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const languageSelector = document.querySelector('.language-selector');
+      const languageMenu = document.getElementById('languageMenu');
+      
+      if (languageSelector && !languageSelector.contains(event.target)) {
+        languageMenu.classList.remove('show');
+      }
+    });
+
+    // Tooltip data for enhanced information
+    const tooltipHandler = {
+      activeTooltip: null,
+      
+      createTooltip(element) {
+        const title = element.getAttribute('data-title');
+        const description = element.getAttribute('data-description');
+        
+        const tooltipEl = document.createElement('div');
+        tooltipEl.className = 'tooltip-popup';
+        
+        let content = '';
+        if (title) content += `<span class="tooltip-title">${title}</span>`;
+        if (description) content += `<div class="tooltip-description">${description}</div>`;
+        
+        tooltipEl.innerHTML = content;
+        
+        return tooltipEl;
+      },
+      
+      positionTooltip(tooltip, trigger) {
+        const formGroup = trigger.closest('.form-group');
+        if (formGroup) {
+          formGroup.style.position = 'relative';
+          formGroup.appendChild(tooltip);
+        }
+      },
+      
+      showTooltip(element) {
+        this.hideTooltip();
+        
+        const tooltip = this.createTooltip(element);
+        this.positionTooltip(tooltip, element);
+        this.activeTooltip = tooltip;
+        element.activeTooltip = tooltip;
+      },
+      
+      hideTooltip() {
+        if (this.activeTooltip && this.activeTooltip.parentNode) {
+          this.activeTooltip.remove();
+          this.activeTooltip = null;
+        }
+      }
+    };
+    
+    // Attach tooltip event listeners
+    document.querySelectorAll('.info-tooltip').forEach(tooltip => {
+      tooltip.addEventListener('mouseenter', function() {
+        tooltipHandler.showTooltip(this);
+      });
+      
+      tooltip.addEventListener('mouseleave', function() {
+        tooltipHandler.hideTooltip();
+      });
+      
+      // Mobile touch support
+      tooltip.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.activeTooltip) {
+          tooltipHandler.hideTooltip();
+        } else {
+          tooltipHandler.showTooltip(this);
+        }
+      });
+    });
+    
+    // Close tooltip when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.classList.contains('info-tooltip')) {
+        tooltipHandler.hideTooltip();
+      }
+    });
+    
+    // Progress bar calculation
+    const form = document.getElementById('assessmentForm');
+    const progressFill = document.getElementById('progressFill');
+    const allInputs = form.querySelectorAll('input[required], select[required]');
+    
+    function updateProgress() {
+      let filled = 0;
+      const processedRadioGroups = new Set();
+      
+      allInputs.forEach(input => {
+        if (input.type === 'radio') {
+          if (!processedRadioGroups.has(input.name)) {
+            processedRadioGroups.add(input.name);
+            const radioGroup = form.querySelectorAll(`input[name="${input.name}"]`);
+            const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+            if (isChecked) filled++;
+          }
+        } else if (input.value.trim() !== '') {
+          filled++;
+        }
+      });
+      
+      const totalFields = new Set(Array.from(allInputs).map(input => 
+        input.type === 'radio' ? input.name : input.id
+      )).size;
+      
+      const percentage = (filled / totalFields) * 100;
+      progressFill.style.width = percentage + '%';
+    }
+    
+    allInputs.forEach(input => {
+      input.addEventListener('input', updateProgress);
+      input.addEventListener('change', updateProgress);
+    });
+    
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+      const isValid = form.checkValidity();
+      if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields before submitting.');
+      }
+    });
+    
+    // Initialize progress bar
+    updateProgress();
+  </script>
+</body>
+</html>

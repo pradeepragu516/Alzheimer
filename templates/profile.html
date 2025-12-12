@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile | Alzheimer's Risk Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+  <div class="profile-container">
+    <!-- Sidebar Navigation -->
+    <aside class="profile-sidebar">
+      <div class="sidebar-header">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9.5 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5.5 8.65C5.97 21.5 7.68 22 9.5 22c5.52 0 10-4.48 10-10S15.02 2 9.5 2z"/>
+        </svg>
+        <span class="brand-name">NeuroDetect</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="/profile" class="nav-item active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Profile</span>
+        </a>
+        <a href="/cognitive-test" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9.5 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5.5 8.65C5.97 21.5 7.68 22 9.5 22c5.52 0 10-4.48 10-10S15.02 2 9.5 2z"/>
+          </svg>
+          <span>Cognitive Tests</span>
+        </a>
+        <a href="/history" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="profile-main">
+      <!-- Header -->
+      <header class="profile-header">
+        <div class="header-content">
+          <button class="back-btn" onclick="window.history.back()">← Back</button>
+          <h1>My Profile</h1>
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn-primary" id="editBtn" onclick="toggleEdit()">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit Profile
+          </button>
+          <div class="edit-actions" id="editActions" style="display: none;">
+            <button class="btn-secondary" onclick="cancelEdit()">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Cancel
+            </button>
+            <button class="btn-primary" onclick="saveProfile()">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Success Message -->
+      <div class="success-alert" id="successAlert" style="display: none;">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Profile updated successfully!</span>
+      </div>
+
+      <!-- Profile Content -->
+      <div class="profile-content">
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-avatar-section">
+            <div class="avatar-wrapper">
+              <div class="profile-avatar">
+                <svg class="avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <button class="avatar-upload-btn">
+                <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </button>
+            </div>
+            <div class="profile-info">
+              <h2 id="displayName">John Doe</h2>
+              <p class="profile-role">
+                <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Patient
+              </p>
+            </div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <div>
+                <span class="stat-label">Age</span>
+                <span class="stat-value" id="displayAge">49 years</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              <div>
+                <span class="stat-label">BMI</span>
+                <span class="stat-value" id="displayBMI">24.5</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <div>
+                <span class="stat-label">Blood Type</span>
+                <span class="stat-value" id="displayBloodType">O+</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="profile-tabs">
+          <button class="tab-btn active" onclick="showTab('personal')">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Personal Info
+          </button>
+          <button class="tab-btn" onclick="showTab('medical')">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Medical Info
+          </button>
+          <button class="tab-btn" onclick="showTab('lifestyle')">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Lifestyle
+          </button>
+          <button class="tab-btn" onclick="showTab('emergency')">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Emergency
+          </button>
+          <button class="tab-btn" onclick="showTab('settings')">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m0 6.36l4.24 4.24M23 12h-6m-6 0H1m13.66 5.66l-4.24-4.24m0-6.36l-4.24-4.24"></path>
+            </svg>
+            Settings
+          </button>
+        </div>
+
+        <!-- Tab Content -->
+        <form id="profileForm" method="POST" action="/update_profile">
+        <div class="tab-content">
+          <!-- Personal Information Tab -->
+          <div id="personalTab" class="tab-panel active">
+            <div class="form-section">
+              <h3 class="section-title">Personal Information</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">First Name</label>
+                  <input type="text" id="firstName" name="firstName" class="form-input" value="John" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last Name</label>
+                  <input type="text" id="lastName" name="lastName" class="form-input" value="Doe" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" id="email" name="email" class="form-input" value="{{ email }}" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" value="+1 (555) 123-4567" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date of Birth</label>
+                  <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-input" value="1975-05-15" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <select id="gender" name="gender" class="form-input" disabled>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <h4 class="subsection-title">Address</h4>
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label class="form-label">Street Address</label>
+                  <input type="text" id="address" name="address" class="form-input" value="123 Medical Plaza, Healthcare District" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">City</label>
+                  <input type="text" id="city" name="city" class="form-input" value="New York" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">State</label>
+                  <input type="text" id="state" name="state" class="form-input" value="NY" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Zip Code</label>
+                  <input type="text" id="zipCode" name="zipCode" class="form-input" value="10001" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medical Information Tab -->
+          <div id="medicalTab" class="tab-panel">
+            <div class="form-section">
+              <h3 class="section-title">Medical Information</h3>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Blood Type</label>
+                  <select id="bloodType" class="form-input" disabled>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+" selected>O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Height (cm)</label>
+                  <input type="number" id="height" class="form-input" value="175" disabled>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Weight (kg)</label>
+                  <input type="number" id="weight" class="form-input" value="75" disabled>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">BMI</label>
+                  <div class="bmi-display">
+                    <span class="bmi-value">24.5</span>
+                    <span class="bmi-category">Normal</span>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Allergies</label>
+                  <textarea id="allergies" class="form-textarea" rows="3" disabled>None</textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Current Medications</label>
+                  <textarea id="medications" class="form-textarea" rows="3" disabled>None</textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Family History</label>
+                  <textarea id="familyHistory" class="form-textarea" rows="3" disabled>Mother had Alzheimer's at age 72</textarea>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Existing Conditions</label>
+                  <textarea id="conditions" class="form-textarea" rows="3" disabled>Hypertension</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lifestyle Tab -->
+          <div id="lifestyleTab" class="tab-panel">
+            <div class="form-section">
+              <h3 class="section-title">Lifestyle Information</h3>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Smoking Status</label>
+                  <select id="smoking" class="form-input" disabled>
+                    <option value="never" selected>Never</option>
+                    <option value="former">Former Smoker</option>
+                    <option value="current">Current Smoker</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Alcohol Consumption</label>
+                  <select id="alcohol" class="form-input" disabled>
+                    <option value="never">Never</option>
+                    <option value="occasionally" selected>Occasionally</option>
+                    <option value="regularly">Regularly</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Exercise Frequency</label>
+                  <select id="exercise" class="form-input" disabled>
+                    <option value="none">None</option>
+                    <option value="occasional">Occasional</option>
+                    <option value="regular" selected>Regular</option>
+                    <option value="daily">Daily</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Diet Type</label>
+                  <select id="diet" class="form-input" disabled>
+                    <option value="balanced" selected>Balanced</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="mediterranean">Mediterranean</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Sleep Hours</label>
+                  <select id="sleep" class="form-input" disabled>
+                    <option value="less-than-5">Less than 5</option>
+                    <option value="5-6">5-6 hours</option>
+                    <option value="7-8" selected>7-8 hours</option>
+                    <option value="more-than-8">More than 8</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emergency Contact Tab -->
+          <div id="emergencyTab" class="tab-panel">
+            <div class="form-section">
+              <h3 class="section-title">Emergency Contact</h3>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Contact Name</label>
+                  <input type="text" id="emergencyName" class="form-input" value="Jane Doe" disabled>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Relationship</label>
+                  <input type="text" id="emergencyRelation" class="form-input" value="Spouse" disabled>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" id="emergencyPhone" class="form-input" value="+1 (555) 987-6543" disabled>
+                </div>
+              </div>
+
+              <div class="info-box">
+                <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <div>
+                  <h4>Why do we need this?</h4>
+                  <p>Emergency contact information is crucial for medical emergencies. We'll contact this person if we cannot reach you.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div id="settingsTab" class="tab-panel">
+            <div class="form-section">
+              <h3 class="section-title">Account Settings</h3>
+              
+              <div class="settings-group">
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <h4>Notification Preferences</h4>
+                    <p>Receive notifications about test reminders and results</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="notifications" checked disabled>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <h4>Email Updates</h4>
+                    <p>Receive health tips and platform updates via email</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="emailUpdates" checked disabled>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="danger-zone">
+                <h4>Danger Zone</h4>
+                <p>Once you delete your account, there is no going back. Please be certain.</p>
+                <button class="btn-danger">Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Only update this line if you have a profile.js file in static, otherwise remove it -->
+  <!-- If you do NOT have profile.js, remove the line below to avoid 404 errors -->
+  <!-- <script src="{{ url_for('static', filename='profile.js') }}"></script> -->
+  <script>
+    function toggleEdit() {
+      // Enable all inputs/selects/textareas in the form
+      document.querySelectorAll('#profileForm input, #profileForm select, #profileForm textarea').forEach(el => {
+        el.disabled = false;
+      });
+      document.getElementById('editBtn').style.display = 'none';
+      document.getElementById('editActions').style.display = 'inline-block';
+    }
+
+    function cancelEdit() {
+      // Reload the page to reset form (or you can reset values manually)
+      window.location.reload();
+    }
+
+    function saveProfile() {
+      // Submit the form to /update_profile (must be implemented in Flask)
+      document.getElementById('profileForm').submit();
+    }
+  </script>
+</body>
+</html>

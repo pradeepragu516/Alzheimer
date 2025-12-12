@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction History | Alzheimer's Risk Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='history.css') }}">
+</head>
+<body>
+  <a href="/" class="logout-btn">Logout</a>
+  
+  <div class="history-container">
+    <div class="history-header">
+      <h1>Prediction History</h1>
+      <p class="history-subtitle">View and manage all your previous Alzheimer's risk assessments</p>
+    </div>
+
+    <div class="nav-buttons">
+      <a href="/predictor" class="nav-btn primary">New Prediction</a>
+      <a href="/home" class="nav-btn secondary">Dashboard</a>
+    </div>
+
+    {% if predictions %}
+      <div class="predictions-list">
+        <div class="predictions-count">
+          Total Assessments: <span>{{ predictions|length }}</span>
+        </div>
+
+        {% for prediction in predictions %}
+          <div class="prediction-card">
+            <div class="prediction-header">
+              <span class="prediction-result {% if 'HIGH RISK' in prediction.result %}high-risk{% else %}low-risk{% endif %}">
+                {{ prediction.result }}
+              </span>
+              <span class="prediction-date">
+                {{ prediction.date }}
+              </span>
+            </div>
+
+            <div class="patient-info-card">
+              <span class="patient-icon">👤</span>
+              <span class="patient-name">Patient: {{ prediction.patient_name }}</span>
+            </div>
+
+            <div class="card-divider"></div>
+
+            <div class="input-data-section">
+              <h4 class="section-title">Assessment Parameters</h4>
+              <div class="input-data-grid">
+                {% for key, value in prediction.input_data.items() %}
+                  <div class="input-item">
+                    <div class="input-label">{{ key }}</div>
+                    <div class="input-value">{{ value }}</div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="card-divider"></div>
+
+            <div class="download-actions">
+              <span class="download-label">Download Report:</span>
+              <a href="/download_report/pdf?prediction_id={{ loop.index0 }}" class="download-btn pdf-btn">
+                PDF Report
+              </a>
+              <a href="/download_report/docx?prediction_id={{ loop.index0 }}" class="download-btn docx-btn">
+                DOCX Report
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="no-predictions">
+        <div class="no-predictions-icon">📋</div>
+        <h3>No Predictions Yet</h3>
+        <p>You haven't made any assessments yet. Start your first cognitive assessment to track your results here.</p>
+        <a href="/predictor" class="start-btn">Start First Assessment</a>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

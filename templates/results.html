@@ -1,0 +1,175 @@
+<!-- templates/result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction Result | Alzheimer's Risk Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 25.2c-6.186 0-11.2-5.014-11.2-11.2S9.814 4.8 16 4.8 27.2 9.814 27.2 16 22.186 27.2 16 27.2z" fill="#2563EB"/>
+          <path d="M16 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm-5 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm10 0c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z" fill="#2563EB"/>
+        </svg>
+        <span>Alzheimer's Risk Predictor</span>
+      </div>
+      <div class="header-actions">
+        <a href="/predictor" class="btn-text">New Analysis</a>
+        <a href="/history" class="btn-text">History</a>
+        <a href="/" class="btn-logout">Logout</a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Result Card -->
+      <div class="result-card">
+        <div class="card-header">
+          <h1>Analysis Results</h1>
+          <span class="date">{{ current_date }}</span>
+        </div>
+
+        <!-- Patient Information -->
+        <div class="patient-section">
+          <div class="section-title">Patient Information</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Patient Name</span>
+              <span class="info-value">{{ patient_name }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Analysis ID</span>
+              <span class="info-value">#{{ analysis_id or '20241006001' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prediction Result -->
+        <div class="prediction-section">
+          <div class="section-title">Diagnosis Prediction</div>
+          <div class="prediction-box {% if 'Positive' in result %}risk-high{% else %}risk-low{% endif %}">
+            <div class="prediction-icon">
+              {% if 'Positive' in result %}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+              </svg>
+              {% else %}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+              </svg>
+              {% endif %}
+            </div>
+            <div class="prediction-content">
+              <h2>{{ result }}</h2>
+              <p class="prediction-desc">
+                {% if 'Positive' in result %}
+                The analysis indicates potential risk factors for Alzheimer's disease based on the provided medical data. 
+                Immediate consultation with a neurologist is recommended for comprehensive clinical evaluation.
+                {% else %}
+                No significant risk indicators detected in the current analysis. 
+                Continue regular health monitoring and maintain preventive healthcare practices.
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinical Summary -->
+        <div class="summary-section">
+          <div class="section-title">Clinical Parameters Evaluated</div>
+          <div class="parameters-grid">
+            <div class="parameter-card">
+              <div class="param-icon">🧬</div>
+              <div class="param-name">Genetic Markers</div>
+              <div class="param-status">Analyzed</div>
+            </div>
+            <div class="parameter-card">
+              <div class="param-icon">🧪</div>
+              <div class="param-name">Biomarkers</div>
+              <div class="param-status">Analyzed</div>
+            </div>
+            <div class="parameter-card">
+              <div class="param-icon">🩺</div>
+              <div class="param-name">Medical History</div>
+              <div class="param-status">Reviewed</div>
+            </div>
+            <div class="parameter-card">
+              <div class="param-icon">💊</div>
+              <div class="param-name">Lifestyle Factors</div>
+              <div class="param-status">Assessed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-section">
+          <a href="/predictor" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.5 2.5h-15A1.25 1.25 0 001.25 3.75v12.5A1.25 1.25 0 002.5 17.5h15a1.25 1.25 0 001.25-1.25V3.75A1.25 1.25 0 0017.5 2.5zM10 14.375a.625.625 0 11-1.25 0 .625.625 0 011.25 0zm0-2.5a.625.625 0 11-1.25 0 .625.625 0 011.25 0zm0-2.5a.625.625 0 11-1.25 0 .625.625 0 011.25 0z" fill="currentColor"/>
+            </svg>
+            New Prediction
+          </a>
+          <a href="/history" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 1.25A8.75 8.75 0 1018.75 10 8.76 8.76 0 0010 1.25zm0 15.625A6.875 6.875 0 1116.875 10 6.883 6.883 0 0110 16.875z" fill="currentColor"/>
+              <path d="M10 5v5.625l4.063 2.344-.938 1.562L8.75 11.875V5H10z" fill="currentColor"/>
+            </svg>
+            View History
+          </a>
+        </div>
+      </div>
+
+      <!-- Download Report Card -->
+      <div class="download-card">
+        <div class="download-header">
+          <h3>Download Medical Report</h3>
+          <p>Comprehensive analysis report with detailed findings and recommendations</p>
+        </div>
+        <div class="download-options">
+          <a href="/download_report/pdf" class="download-option">
+            <div class="download-icon pdf">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H8a2 2 0 00-2 2v24a2 2 0 002 2h16a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 2v6h6M16 18v-6M12 16l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="download-info">
+              <strong>PDF Report</strong>
+              <span>Portable Document Format</span>
+            </div>
+          </a>
+          <a href="/download_report/docx" class="download-option">
+            <div class="download-icon docx">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H8a2 2 0 00-2 2v24a2 2 0 002 2h16a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 2v6h6M12 18h8M12 22h8M12 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="download-info">
+              <strong>DOCX Report</strong>
+              <span>Microsoft Word Format</span>
+            </div>
+          </a>
+        </div>
+        <div class="report-includes">
+          <strong>Report includes:</strong> Patient details, clinical parameters, prediction results, risk assessment, and medical recommendations.
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z" fill="#DC2626"/>
+        </svg>
+        <p><strong>Medical Disclaimer:</strong> This AI-based prediction is a screening tool and should not replace professional medical diagnosis. Always consult qualified healthcare professionals for clinical decisions.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

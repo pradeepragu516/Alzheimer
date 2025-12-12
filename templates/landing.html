@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroDetect - AI-Powered Alzheimer's Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <style>
+        /* Inline critical CSS for faster loading - full styles in landing.css */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary-color: #10b981;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-dark: #1f2937;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="landing-navbar" id="navbar">
+        <div class="landing-nav-content">
+            <div class="landing-logo">
+                <svg class="landing-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+                <span class="landing-logo-text">NeuroDetect</span>
+            </div>
+            
+            <div class="landing-nav-links" id="navLinks">
+                <a onclick="scrollToSection('home')" class="landing-nav-link">Home</a>
+                <a onclick="scrollToSection('about')" class="landing-nav-link">About</a>
+                <a onclick="scrollToSection('features')" class="landing-nav-link">Features</a>
+                <a onclick="scrollToSection('how-it-works')" class="landing-nav-link">How It Works</a>
+                <a onclick="scrollToSection('contact')" class="landing-nav-link">Contact</a>
+            </div>
+
+            <div class="landing-nav-actions">
+                <a href="/login" class="landing-btn-secondary">Login</a>
+                <a href="/signup" class="landing-btn-primary">Get Started</a>
+            </div>
+
+            <button class="landing-mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+                <svg class="close-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="landing-hero-section">
+        <div class="landing-hero-content">
+            <div class="landing-hero-text">
+                <h1 class="landing-hero-title">
+                    Advanced AI-Powered <br>
+                    <span class="landing-gradient-text">Alzheimer's Detection</span>
+                </h1>
+                <p class="landing-hero-description">
+                    Empowering early detection through cutting-edge artificial intelligence, 
+                    cognitive assessments, and MRI analysis. Take control of your cognitive health today.
+                </p>
+                <div class="landing-hero-buttons">
+                    <a href="/signup" class="landing-btn-primary landing-btn-large">
+                        Start Assessment 
+                        <svg class="landing-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"></path>
+                        </svg>
+                    </a>
+                    <button class="landing-btn-outline landing-btn-large" onclick="scrollToSection('about')">Learn More</button>
+                </div>
+                <div class="landing-hero-stats">
+                    <div class="landing-stat">
+                        <div class="landing-stat-number">95%</div>
+                        <div class="landing-stat-label">Accuracy Rate</div>
+                    </div>
+                    <div class="landing-stat">
+                        <div class="landing-stat-number">10K+</div>
+                        <div class="landing-stat-label">Tests Completed</div>
+                    </div>
+                    <div class="landing-stat">
+                        <div class="landing-stat-number">24/7</div>
+                        <div class="landing-stat-label">Support Available</div>
+                    </div>
+                </div>
+            </div>
+            <div class="landing-hero-visual">
+                <div class="landing-brain-animation">
+                    <svg class="landing-brain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <div class="landing-pulse-ring landing-ring-1"></div>
+                    <div class="landing-pulse-ring landing-ring-2"></div>
+                    <div class="landing-pulse-ring landing-ring-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="landing-about-section">
+        <div class="landing-section-content">
+            <div class="landing-section-header">
+                <span class="landing-section-tag">About Us</span>
+                <h2 class="landing-section-title">Leading the Future of Cognitive Health</h2>
+                <p class="landing-section-description">
+                    Our platform combines advanced AI technology with medical expertise to provide 
+                    early Alzheimer's detection, helping millions take preventive action.
+                </p>
+            </div>
+            
+            <div class="landing-about-grid">
+                <div class="landing-about-card">
+                    <div class="landing-about-icon-wrapper">
+                        <svg class="landing-about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>State-of-the-art machine learning models trained on thousands of medical cases for accurate predictions.</p>
+                </div>
+                
+                <div class="landing-about-card">
+                    <div class="landing-about-icon-wrapper">
+                        <svg class="landing-about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>HIPAA-compliant platform with end-to-end encryption ensuring your health data remains confidential.</p>
+                </div>
+                
+                <div class="landing-about-card">
+                    <div class="landing-about-icon-wrapper">
+                        <svg class="landing-about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>Expert Support</h3>
+                    <p>Access to medical professionals and support teams dedicated to your cognitive health journey.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="landing-features-section">
+        <div class="landing-section-content">
+            <div class="landing-section-header">
+                <span class="landing-section-tag">Features</span>
+                <h2 class="landing-section-title">Comprehensive Detection Platform</h2>
+            </div>
+            
+            <div class="landing-features-grid">
+                <div class="landing-feature-card">
+                    <svg class="landing-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    <h3>Cognitive Testing</h3>
+                    <p>Interactive memory, pattern recognition, and language tests designed by neurologists.</p>
+                    <ul class="landing-feature-list">
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Memory recall assessments
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Pattern recognition tests
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Reaction time analysis
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="landing-feature-card landing-featured">
+                    <svg class="landing-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <h3>MRI Scan Analysis</h3>
+                    <p>Advanced CNN-based deep learning models for precise brain scan interpretation.</p>
+                    <ul class="landing-feature-list">
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Automated scan processing
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Disease stage identification
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Visual brain mapping
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="landing-feature-card">
+                    <svg class="landing-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor cognitive health trends over time with detailed analytics and reports.</p>
+                    <ul class="landing-feature-list">
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Historical data visualization
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Trend analysis graphs
+                        </li>
+                        <li>
+                            <svg class="landing-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Downloadable PDF reports
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="landing-how-it-works-section">
+        <div class="landing-section-content">
+            <div class="landing-section-header">
+                <span class="landing-section-tag">How It Works</span>
+                <h2 class="landing-section-title">Simple 4-Step Process</h2>
+            </div>
+            
+            <div class="landing-steps-container">
+                <div class="landing-step">
+                    <div class="landing-step-number">01</div>
+                    <div class="landing-step-content">
+                        <h3>Create Account</h3>
+                        <p>Sign up securely and set up your profile with basic health information.</p>
+                    </div>
+                </div>
+                
+                <div class="landing-step">
+                    <div class="landing-step-number">02</div>
+                    <div class="landing-step-content">
+                        <h3>Complete Tests</h3>
+                        <p>Take interactive cognitive assessments and upload MRI scans if available.</p>
+                    </div>
+                </div>
+                
+                <div class="landing-step">
+                    <div class="landing-step-number">03</div>
+                    <div class="landing-step-content">
+                        <h3>AI Analysis</h3>
+                        <p>Our advanced AI models process your data to assess Alzheimer's risk.</p>
+                    </div>
+                </div>
+                
+                <div class="landing-step">
+                    <div class="landing-step-number">04</div>
+                    <div class="landing-step-content">
+                        <h3>Get Results</h3>
+                        <p>Review detailed results, recommendations, and track progress over time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="landing-cta-section">
+        <div class="landing-cta-content">
+            <h2>Ready to Take Control of Your Cognitive Health?</h2>
+            <p>Join thousands who trust our platform for early Alzheimer's detection</p>
+            <a href="/signup" class="landing-btn-primary landing-btn-large">
+                Get Started Now 
+                <svg class="landing-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="landing-contact-section">
+        <div class="landing-section-content">
+            <div class="landing-section-header">
+                <span class="landing-section-tag">Contact Us</span>
+                <h2 class="landing-section-title">We're Here to Help</h2>
+            </div>
+            
+            <div class="landing-contact-grid">
+                <div class="landing-contact-info">
+                    <h3>Get in Touch</h3>
+                    <p>Have questions? Our support team is available 24/7 to assist you.</p>
+                    <div class="landing-contact-details">
+                        <div class="landing-contact-item">
+                            <strong>Email:</strong>
+                            <span>support@neurodetect.com</span>
+                        </div>
+                        <div class="landing-contact-item">
+                            <strong>Phone:</strong>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="landing-contact-item">
+                            <strong>Address:</strong>
+                            <span>123 Medical Plaza, Healthcare District</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="landing-contact-form" onsubmit="handleContactForm(event)">
+                    <input type="text" placeholder="Your Name" class="landing-form-input" required>
+                    <input type="email" placeholder="Your Email" class="landing-form-input" required>
+                    <textarea placeholder="Your Message" class="landing-form-textarea" rows="4" required></textarea>
+                    <button type="submit" class="landing-btn-primary landing-btn-full">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="landing-footer-content">
+            <div class="landing-footer-section">
+                <div class="landing-footer-logo">
+                    <svg class="landing-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span class="landing-logo-text">NeuroDetect</span>
+                </div>
+                <p>Advanced AI-powered platform for early Alzheimer's detection and cognitive health monitoring.</p>
+            </div>
+            
+            <div class="landing-footer-section">
+                <h4>Quick Links</h4>
+                <a href="#about">About Us</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            
+            <div class="landing-footer-section">
+                <h4>Resources</h4>
+                <a href="#">Documentation</a>
+                <a href="#">Support Center</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">FAQ</a>
+            </div>
+            
+            <div class="landing-footer-section">
+                <h4>Stay Updated</h4>
+                <p>Subscribe to our newsletter for health tips and updates.</p>
+                <form class="landing-newsletter" onsubmit="handleNewsletter(event)">
+                    <input type="email" placeholder="Your email" class="landing-newsletter-input" required>
+                    <button type="submit" class="landing-btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="landing-footer-bottom">
+            <p>&copy; 2025 NeuroDetect. All rights reserved. HIPAA Compliant.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll to section
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                closeMobileMenu();
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuIcon = document.querySelector('.menu-icon');
+            const closeIcon = document.querySelector('.close-icon');
+            
+            navLinks.classList.toggle('mobile-open');
+            
+            if (navLinks.classList.contains('mobile-open')) {
+                menuIcon.style.display = 'none';
+                closeIcon.style.display = 'block';
+            } else {
+                menuIcon.style.display = 'block';
+                closeIcon.style.display = 'none';
+            }
+        }
+
+        function closeMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuIcon = document.querySelector('.menu-icon');
+            const closeIcon = document.querySelector('.close-icon');
+            
+            navLinks.classList.remove('mobile-open');
+            menuIcon.style.display = 'block';
+            closeIcon.style.display = 'none';
+        }
+
+        // Contact form handler
+        function handleContactForm(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            event.target.reset();
+        }
+
+        // Newsletter handler
+        function handleNewsletter(event) {
+            event.preventDefault();
+            alert('Thank you for subscribing to our newsletter!');
+            event.target.reset();
+        }
+
+        // Add scroll animation observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.landing-about-card, .landing-feature-card, .landing-step');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
